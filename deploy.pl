@@ -6,6 +6,7 @@ use warnings;
 use Net::FTP;
 
 my $ftp = Net::FTP->new("ftp.dm2usa.org", Debug => 0) or die "Cannot connect to ftp.dm2usa.org: $@";
+print "Pass: ";
 my $pass = <STDIN>;
 chomp $pass;
 $ftp->login("bmem", $pass) or die "Cannot login ", $ftp->message;
