@@ -6,8 +6,9 @@ use warnings;
 use Net::FTP;
 
 my $ftp = Net::FTP->new("ftp.dm2usa.org", Debug => 0) or die "Cannot connect to ftp.dm2usa.org: $@";
-$ftp->login("bret", 'ya01nofi#') or die "Cannot login ", $ftp->message;
-$ftp->cwd("/biblememory") or die "Cannot change working directory ", $ftp->message;
+my $pass = <STDIN>;
+chomp $pass;
+$ftp->login("bmem", $pass) or die "Cannot login ", $ftp->message;
 
 for my $file (qw(
     drill.pl
