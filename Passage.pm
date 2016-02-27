@@ -17,7 +17,7 @@ sub get_passage {
     my $format  = $params{format};
 
     my @verses;
-    if ($version =~ /\A(NASB|LBLA|SBLGNT)\z/) {
+    if ($version =~ /\A(NASB|LBLA|SBLGNT|KJV)\z/) {
         $book =~ s/ /_/g;
         open my $f, '<', "source/$version/".lc("$book-$chapter");
         @verses = <$f>;
@@ -61,6 +61,12 @@ sub get_passage {
     $verses =~ s{</?span.*?>}{}g if $format eq 'stripped';
     $verses =~ s/(\S)&mdash;(\S)/$1&mdash; $2/; # make sure an mdash separates words, add an artificial space
 
+    get_passage_raw($verses, $n, $format);
+}
+
+sub get_passage_raw {
+    my ($verses, $n, $format) = @_;
+
     my $tree = parse_text(\$verses, []);
 
     my @phrases;
@@ -69,7 +75,7 @@ sub get_passage {
         push @phrases, shift_words($tree, $num_to_shift);
     }
 
-    if ($format eq 'html') {
+    if ($format && $format eq 'html') {
         s/(\d+):(\S)/<span style="font-size: 0.8em">$1<\/span> $2/ for @phrases;
     }
 

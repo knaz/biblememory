@@ -15,6 +15,10 @@ our %copyrights = (
         <a target="_blank" href="http://sblgnt.com/">SBL Greek New Testament</a> Copyright &copy; 2010<br>
         <a target="_blank" href="http://www.sbl-site.org/">Society of Biblical Literature</a> and <a target="_blank" href="http://www.logos.com/">Logos Bible Software</a>.
     },
+    KJV => q{
+        King James Version in the Public Domain<br>
+        Downloaded from <a target="_blank" href="http://www.loveallpeople.org/kjvpage.html">http://www.loveallpeople.org/kjvpage.html</a>.
+    },
 );
 
 1;

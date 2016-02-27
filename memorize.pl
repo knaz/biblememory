@@ -57,6 +57,23 @@ $body .= <<EOF;
     <h2>Review</h2>
     <p>$toreview<p>
     $copyrights
+    <h2>New Raw Passage</h2>
+    <form method="post" action="new-passage-paste.pl">
+    <input type="hidden" name="u" value="$u">
+    <table>
+        <tr>
+            <th>Name:</th>
+            <td><input type="text" name="passage"></td>
+        </tr>
+        <tr>
+            <th>Paste:</th>
+            <td><textarea name="paste"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">Begin</button></td>
+        </tr>
+    </table>
+    </form>
     <h2>New Passage</h2>
     <form action="new-passage.pl">
     <input type="hidden" name="u" value="$u">
@@ -66,9 +83,10 @@ $body .= <<EOF;
             <td>
                 <select name="version">
                     <option value="NASB">NASB</option>
+                    <option value="ESV">ESV</option>
                     <option value="LBLA">LBLA</option>
                     <option value="SBLGNT">SBLGNT</option>
-                    <option value="ESV">ESV</option>
+                    <option value="KJV">KJV</option>
                 </select>
             </td>
         </tr>

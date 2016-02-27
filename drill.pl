@@ -21,15 +21,17 @@ my $spec = do { local $VAR1; eval $contents; $VAR1 };
 my $linewords = $spec->{linewords};
 my $version = $spec->{version};
 
-my @phrases = Passage::get_passage(
-    version          => $version,
-    book             => $book,
-    chapter          => $chapter,
-    first_verse      => $first_verse,
-    last_verse       => $last_verse,
-    words_per_phrase => $linewords,
-    format           => 'html',
-);
+my @phrases = $spec->{text}
+    ?   Passage::get_passage_raw($spec->{text}, $linewords, 'html')
+    :   Passage::get_passage(
+            version          => $version,
+            book             => $book,
+            chapter          => $chapter,
+            first_verse      => $first_verse,
+            last_verse       => $last_verse,
+            words_per_phrase => $linewords,
+            format           => 'html',
+        );
 
 my $i = 1;
 my $lines = join ',', map "['Card ".$i++.": ',\"$_\"]", map { s/"/\\"/g; s/\n/\\n/g; $_ } @phrases;
