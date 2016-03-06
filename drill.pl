@@ -9,17 +9,17 @@ our $VAR1;
 
 my $q = CGI->new;
 my $u = $q->param('u') || '';
-my $passage = $q->param('passage') || '';
+my $filename = $q->param('f') || '';
 
-$passage =~ /(.*) (\d+):(\d+)-(\d+)/;
-my ($book, $chapter, $first_verse, $last_verse) = ($1, $2, $3, $4);
-
-(my $filename = $passage) =~ s/ /_/g;
 open my $f, "<users/$u/passages/$filename";
 my $contents = do { local $/; <$f> };
 my $spec = do { local $VAR1; eval $contents; $VAR1 };
 my $linewords = $spec->{linewords};
 my $version = $spec->{version};
+my $passage = $spec->{passage};
+
+$passage =~ /(.*) (\d+):(\d+)-(\d+)/;
+my ($book, $chapter, $first_verse, $last_verse) = ($1, $2, $3, $4);
 
 my @phrases = $spec->{text}
     ?   Passage::get_passage_raw($spec->{text}, $linewords, 'html')

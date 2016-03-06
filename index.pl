@@ -14,7 +14,9 @@ my $body = <<EOF;
     <p>If you have already done this step, please use the URL that you already generated. (You should have it bookmarked.)</p>
     <p>If you have not yet generated a personalized memory URL, or if you need a new one, click the button below.</p>
     <form action="generate-personal-link.pl">
-        <button type="submit">Generate Personal Memory URL</button>
+    <div style="text-align: center; margin-bottom: 3em">
+        <button type="submit" style="height: 4em">Generate Personal Memory URL</button>
+    </div>
     </form>
 EOF
 

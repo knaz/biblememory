@@ -14,11 +14,10 @@ my $html = do { local $/; open my $f, "<page-template.html"; <$f> };
 $html =~ s/{title}/Peronal Memory URL/;
 
 my $body = '';
-if (!-d "users/$u") {
-    $body .= qq{<div style="color: red">This is your personalized URL.  Bookmark this page.</div>};
-    mkdir "users/$u";
-}
+$body .= qq{<div style="color: red">This is your personalized URL.  Bookmark this page.</div>}
+    unless -d "users/$u";
 
+mkdir "users/$u" unless -d "users/$u";
 mkdir "users/$u/passages" unless -d "users/$u/passages";
 opendir my $d, "users/$u/passages";
 our $VAR1;
@@ -29,7 +28,10 @@ my @toreview = map {
     my $text = do { local $/; <$f> };
     eval $text;
     $seen_versions{$VAR1->{version}}++;
-    qq~<a target="_blank" href="drill.pl?u=$u&amp;passage=$VAR1->{passage}">$VAR1->{passage} - $VAR1->{version}</a>~;
+    my $href = "drill.pl?u=$u&amp;f=$file";
+    my $text = "$VAR1->{passage} - $VAR1->{version}";
+    qq~<a target="_blank" href="$href">$text</a> ~ .
+    qq~<a href="delete.pl?f=$file">Delete</a>~;
 } sort grep !/^[.]+$/, readdir $d;
 
 my $toreview = @toreview
@@ -110,6 +112,7 @@ $body .= <<EOF;
         </tr>
     </table>
     </form>
+    <span style="height: 3em">&nbsp;</span>
 EOF
 
 $html =~ s/{contentarea}/$body/;
