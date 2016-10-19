@@ -13,6 +13,7 @@ $ftp->login("bmem", $pass) or die "Cannot login ", $ftp->message;
 
 for my $file (qw(
     drill.pl
+    save.pl
     generate-personal-link.pl
     index.pl
     memorize.pl

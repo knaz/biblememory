@@ -103,16 +103,22 @@ function button_state(state) {
         \$('#reveal-button').hide();
         \$('#good-button').show();
         \$('#repeat-button').show();
+        \$('#save-button-learn').hide();
+        \$('#save-button-review').hide();
     }
     else if (state == 'disabled') {
         \$('#reveal-button').hide();
         \$('#good-button').hide();
         \$('#repeat-button').hide();
+        \$('#save-button-learn').show();
+        \$('#save-button-review').show();
     }
     else if (state == 'reveal') {
         \$('#reveal-button').show();
         \$('#good-button').hide();
         \$('#repeat-button').hide();
+        \$('#save-button-learn').hide();
+        \$('#save-button-review').hide();
     }
 }
 
@@ -129,6 +135,11 @@ function reveal() {
 
 function handle_keydown(keydown) {
     return handle_input(keydown.which || keydown.keyCode);
+}
+
+function save_session(is_learn) {
+    \$.post("save.pl", { u: '$u', f: '$filename', is_learn: is_learn });
+    \$('body').html('<div style="color: white">Saved Review Session</div>');
 }
 
 function handle_input(key, keydown) {
@@ -274,6 +285,22 @@ function load() {
     margin: 0;
     font-size: 1.5em;
 ">Repeat</button>
+<button id="save-button-learn" onclick="save_session(1); return false" style="
+    display: none;
+    float: left;
+    height: 10%;
+    width: 50%;
+    margin: 0;
+    font-size: 1.5em;
+">Save as 'Learn'</button>
+<button id="save-button-review" onclick="save_session(0); return false" style="
+    display: none;
+    float: right;
+    height: 10%;
+    width: 50%;
+    margin: 0;
+    font-size: 1.5em;
+">Save as 'Review'</button>
 </body>
 </html>
 HTML

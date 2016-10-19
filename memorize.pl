@@ -22,20 +22,50 @@ mkdir "users/$u/passages" unless -d "users/$u/passages";
 opendir my $d, "users/$u/passages";
 our $VAR1;
 my %seen_versions;
-my @toreview = map {
-    my $file = $_;
-    open my $f, "users/$u/passages/$file";
-    my $text = do { local $/; <$f> };
-    eval $text;
-    $seen_versions{$VAR1->{version}}++;
-    my $href = "drill.pl?u=$u&amp;f=$file";
-    my $text = "$VAR1->{passage} - $VAR1->{version}";
-    qq~<a target="_blank" href="$href">$text</a> ~ .
-    qq~<a href="delete.pl?f=$file">Delete</a>~;
-} sort grep !/^[.]+$/, readdir $d;
+my $time = time;
 
-my $toreview = @toreview
-    ? '<ul>' . join('', map "<li>$_</li>", @toreview) . '</ul>'
+# users/e95a986355/passages/1_Chronicles_1:1-10
+# ./memorize.pl u=e95a986355
+
+my @saved_passages = map $_->[0],
+    sort { $a->[1] cmp $b->[1] }
+    map {
+        my $file = $_;
+
+        my $code = do {
+            open my $f, "users/$u/passages/$file";
+            local $/; <$f>
+        };
+        eval $code;
+
+        my @log = map { /(\d+) (learn|review)/ ? [$1, $2] : () } do {
+            if (open my $f, "users/$u/passages/$file.log") { <$f>; }
+            else                                           { (  ); }
+        };
+
+        my $learn = @log == 1 || @log > 1 && $log[-1][1] eq 'learn';
+        my $due = !$learn && @log >= 2 && ($log[-1][0] - $log[-2][0]) * 2 > $time - $log[-1][0];
+
+        my $color = $learn ? 'red' : $due ? 'blue' : 'black';
+
+        $seen_versions{$VAR1->{version}}++;
+        my $href = "drill.pl?u=$u&amp;f=$file";
+        my $text = "$VAR1->{passage} - $VAR1->{version}";
+
+        my $sort_key = ($learn ? "AA" : "ZZ") . ($due ? "AA" : "ZZ") . $text;
+
+        [
+            qq~<a target="_blank" href="$href" style="color: $color">$text</a> ~ .
+            qq~<a href="delete.pl?f=$file">Delete</a>~,
+            $sort_key,
+        ];
+    }
+    grep !/^[.]+$/,
+    grep !/\.log$/,
+    readdir $d;
+
+my $saved_passages = @saved_passages
+    ? "<ul>\n" . join('', map "<li>$_</li>\n", @saved_passages) . "\n</ul>"
     : 'Nothing to review.';
 
 my $copyrights = join '',
@@ -56,8 +86,8 @@ my $book_options = join '', map qq{<option value="$_">$_</option>},
     'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation';
 
 $body .= <<EOF;
-    <h2>Review</h2>
-    <p>$toreview<p>
+    <h2>Passages</h2>
+    <p>$saved_passages<p>
     $copyrights
     <h2>New Raw Passage</h2>
     <form method="post" action="new-passage-paste.pl">
