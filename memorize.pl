@@ -44,7 +44,16 @@ my @saved_passages = map $_->[0],
         };
 
         my $learn = @log == 1 || @log > 1 && $log[-1][1] eq 'learn';
-        my $due = !$learn && @log >= 2 && ($log[-1][0] - $log[-2][0]) * 2 > $time - $log[-1][0];
+        my $due_time = !$learn && @log >= 2
+            ? $log[-1][0] + 2 * ($log[-1][0] - $log[-2][0])
+            : 0;
+        my $due_in = $due_time ? $due_time - $time : 0;
+        my $due = $due_in < 0 ? 1 : 0;
+
+        my $debug =
+            @log == 1 ? "last review time: ".$log[-1][0].", current time: $time" :
+            @log  > 1 ? "last review time: ".$log[-1][0].", last last review time: $log[-2][0], current time: $time" :
+            "";
 
         my $color = $learn ? 'red' : $due ? 'blue' : 'black';
 
@@ -53,10 +62,15 @@ my @saved_passages = map $_->[0],
         my $text = "$VAR1->{passage} - $VAR1->{version}";
 
         my $sort_key = ($learn ? "AA" : "ZZ") . ($due ? "AA" : "ZZ") . $text;
+        my $due_in_text =
+            !@log  ? "(unreviewed)" :
+            $learn ? "(learning)" :
+            $due   ? "(due now)" :
+            " (due in $due_in seconds)";
 
         [
             qq~<a target="_blank" href="$href" style="color: $color">$text</a> ~ .
-            qq~<a href="delete.pl?f=$file">Delete</a>~,
+            qq~<a href="delete.pl?f=$file">Delete</a>$due_in_text~,
             $sort_key,
         ];
     }
