@@ -55,22 +55,35 @@ my @saved_passages = map $_->[0],
             @log  > 1 ? "last review time: ".$log[-1][0].", last last review time: $log[-2][0], current time: $time" :
             "";
 
-        my $color = $learn ? 'red' : $due ? 'blue' : 'black';
-
         $seen_versions{$VAR1->{version}}++;
         my $href = "drill.pl?u=$u&amp;f=$file";
         my $text = "$VAR1->{passage} - $VAR1->{version}";
 
-        my $sort_key = ($learn ? "AA" : "ZZ") . ($due ? "AA" : "ZZ") . $text;
+        my $sort_key =
+            (
+                !@log  ? "ZZ" :
+                $learn ? "AA" :
+                $due   ? "BB" :
+                         "CC"
+            ) . (
+                $due ? "AA" : "ZZ"
+            ) . $text;
+
         my $due_in_text =
             !@log  ? "(unreviewed)" :
             $learn ? "(learning)" :
             $due   ? "(due now)" :
             " (due in $due_in seconds)";
 
+        my $color =
+            !@log ? 'gray' :
+            $learn ? 'red' :
+            $due ? 'blue' :
+            'black';
+
         [
             qq~<a target="_blank" href="$href" style="color: $color">$text</a> ~ .
-            qq~<a href="delete.pl?f=$file">Delete</a>$due_in_text~,
+            qq~<a href="delete.pl?u=$u&amp;f=$file">Delete</a>$due_in_text~,
             $sort_key,
         ];
     }
