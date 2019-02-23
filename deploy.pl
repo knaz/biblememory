@@ -19,12 +19,10 @@ for my $file (qw(
     index.pl
     memorize.pl
     new-passage.pl
-    new-passage2.pl
     new-passage-paste.pl
     page-template.html
     Versions.pm
     Passage.pm
-    Blowfish.js
     new-passage-save.pl
     .htaccess
 )) {
