@@ -174,6 +174,16 @@ function on_reviewed(params) {
 
     item.due = params.answered_time + interval;
     item.last_review = params.answered_time;
+
+    if (typeof Storage !== "undefined") {
+        console.log('Saving to drill-$u-$filename');
+        localStorage.setItem("drill-$u-$filename", JSON.stringify({
+            "set": set,
+            "state": state,
+            "current_item": current_item,
+            "displayed_time": displayed_time,
+        }));
+    }
 }
 
 function select_item() {
@@ -213,14 +223,20 @@ function load() {
 
     set = [];
 
-    for (var i = 0; i < lines.length; i++) {
-        var meta = {
-            'due': now - 1,
-            'last_review': now - 86400,
-            'ease': 2,
-            'id': id,
-        };
+    var saved;
 
+    if (typeof Storage !== "undefined") {
+        var saved = localStorage.getItem("drill-$u-$filename");
+        if (saved) {
+          saved = JSON.parse(saved);
+          set            = saved.set;
+          state          = saved.state;
+          current_item   = saved.current_item;
+          displayed_time = saved.displayed_time;
+        }
+    }
+
+    for (var i = 0; i < lines.length; i++) {
         memwindow.append(
             '<span id="title_' + id + '">' +
             lines[i][0] + ' ' +
@@ -229,7 +245,13 @@ function load() {
             lines[i][1] +
             '<br></span>');
 
-        set.push(meta);
+        if (!saved)
+          set.push({
+              'due': now - 1,
+              'last_review': now - 86400,
+              'ease': 2,
+              'id': id,
+          });
 
         id += 1;
     }
