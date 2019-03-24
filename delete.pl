@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 
 use strict;
 use warnings;
@@ -19,7 +19,7 @@ print <<EOF;
 <html>
 <head>
 <script>
-window.location = "http://dm2usa.org/biblememory/memorize.pl?u=$u";
+window.location = "http://keithnaz.com/biblememory/memorize.pl?u=$u";
 </script>
 </head>
 <body>

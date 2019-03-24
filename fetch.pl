@@ -1,11 +1,11 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 
 use strict;
 use warnings;
 
 use Net::FTP;
 
-my $ftp = Net::FTP->new("ftp.dm2usa.org", Debug => 0) or die "Cannot connect to ftp.dm2usa.org: $@";
+my $ftp = Net::FTP->new("ftp.keithnaz.com", Debug => 0) or die "Cannot connect to ftp.keithnaz.com: $@";
 print "Pass: ";
 my $pass = <STDIN>;
 chomp $pass;
